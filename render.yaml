@@ -1,0 +1,68 @@
+services:
+  # Database Service (PostgreSQL)
+  - type: pserv
+    name: postgres
+    env: docker
+    region: oregon
+    plan: free
+    dockerCommand: docker run -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} -p 5432:5432 postgres:15
+    envVars:
+      - key: POSTGRES_DB
+        value: urlshortener
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+
+  # Redis Service (Managed or Docker)
+  # For free tier, Render doesn't offer Managed Redis directly in Blueprint easily without paid plan usually,
+  # but here we use a lightweight Docker Redis for simplicity.
+  - type: pserv
+    name: redis
+    env: docker
+    region: oregon
+    plan: free
+    dockerCommand: docker run -p 6379:6379 redis:7
+
+  # Backend API Service
+  - type: web
+    name: urlshortener-api
+    env: docker
+    region: oregon
+    plan: free
+    dockerContext: .
+    dockerfilePath: Dockerfile
+    healthCheckPath: /api/public/health
+    envVars:
+      - key: DATABASE_URL
+        fromService:
+          type: pserv
+          name: postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: pserv
+          name: redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        fromService:
+          type: static
+          name: urlshortener-web
+          property: url
+
+  # Frontend Static Site
+  - type: static
+    name: urlshortener-web
+    env: static
+    region: oregon
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: urlshortener-api
+          property: url
