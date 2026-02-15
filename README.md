@@ -2,7 +2,7 @@
 
 A production-ready URL Shortener featuring a Spring Boot backend and a modern React + Vite frontend
 
-## 🚀 Features
+##  Features
 
 -   **Shorten URLs**: Instant link shortening with unique aliases.
 -   **Custom Aliases**: Create vanity URLs (e.g., `qlnk.io/my-brand`).
