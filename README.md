@@ -7,7 +7,7 @@ A production-ready URL Shortener featuring a Spring Boot backend and a modern Re
 
 -   **Shorten URLs**: Instant link shortening with unique aliases.
 -   **Custom Aliases**: Create vanity URLs (e.g., `qlnk.io/my-brand`).
--   **Analytics**: Track clicks, geographic locations, device types, and more.
+-   **Analytics**: Track clicks, geographic locations, device types, and more
 -   **QR Codes**: Auto-generated QR codes for every link.
 -   **Security**: Password protection for sensitive links.
 -   **Expiration**: Set expiry dates for temporary links.
